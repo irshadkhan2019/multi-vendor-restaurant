@@ -6,6 +6,7 @@ from .models import User, UserProfile
 # connect receiver to signal sent by db .
 @receiver(post_save, sender=User)
 def post_save_create_profile_receiver(sender, instance, created, **kwargs):
+    # print(sender, instance, created)
     if created:
         # if user is created then create USerProfile for that user
         # print("User Obj was created so will create his profile")
