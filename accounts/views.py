@@ -9,10 +9,14 @@ def registerUser(request):
         print(request.POST)
         form = UserForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            user: User = form.save(commit=False)
+            # hash password
+            password = form.cleaned_data["password"]
+
             # assign customer role to user
             user.role = User.CUSTOMER
-            form.save()
+            user.set_password(password)
+            user.save()
             return redirect("accounts:registerUser")
 
     else:
