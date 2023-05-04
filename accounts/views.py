@@ -4,13 +4,15 @@ from vendor.forms import VendorForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.models import Vendor
+from django.contrib.auth.decorators import login_required
+from .utils import detectUser
 
 
 # Create your views here.
 def registerUser(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already logged in!")
-        return redirect("accounts:dashboard")
+        return redirect("accounts:myAccount")
     elif request.method == "POST":
         # print(request.POST)
         form = UserForm(request.POST)
@@ -55,7 +57,7 @@ def registerUser(request):
 def registerVendor(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already logged in!")
-        return redirect("accounts:dashboard")
+        return redirect("accounts:myAccount")
     elif request.method == "POST":
         # print(request.POST)
         # print("FILES", request.FILES)
@@ -104,7 +106,7 @@ def registerVendor(request):
 def login(request):
     if request.user.is_authenticated:
         messages.warning(request, "You are already logged in!")
-        return redirect("accounts:dashboard")
+        return redirect("accounts:myAccount")
     elif request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
@@ -114,7 +116,8 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             messages.success(request, "You are now logged in.")
-            return redirect("accounts:dashboard")
+            # myAccount view dynamically route user to his respective dashboard based on his role
+            return redirect("accounts:myAccount")
         else:
             messages.error(request, "Invalid login credentials")
             return redirect("accounts:login")
@@ -127,5 +130,20 @@ def logout(request):
     return redirect("accounts:login")
 
 
-def dashboard(request):
-    return render(request, "accounts/dashboard.html")
+# used to dynamically route user based on its role
+@login_required(login_url="accounts:login")
+def myAccount(request):
+    user = request.user
+    redirectUrl = detectUser(user)
+    # print("Curent user is", user, "redirected to ", redirectUrl)
+    return redirect(redirectUrl)
+
+
+@login_required(login_url="accounts:login")
+def custDashboard(request):
+    return render(request, "accounts/custDashboard.html")
+
+
+@login_required(login_url="accounts:login")
+def vendorDashboard(request):
+    return render(request, "accounts/vendorDashboard.html")
