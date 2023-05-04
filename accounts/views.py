@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect
 from .forms import UserForm
 from vendor.forms import VendorForm
 from .models import User, UserProfile
-from django.contrib import messages
+from django.contrib import messages, auth
 from vendor.models import Vendor
 
 
 # Create your views here.
 def registerUser(request):
-    if request.method == "POST":
+    if request.user.is_authenticated:
+        messages.warning(request, "You are already logged in!")
+        return redirect("accounts:dashboard")
+    elif request.method == "POST":
         # print(request.POST)
         form = UserForm(request.POST)
         if form.is_valid():
@@ -50,7 +53,10 @@ def registerUser(request):
 
 
 def registerVendor(request):
-    if request.method == "POST":
+    if request.user.is_authenticated:
+        messages.warning(request, "You are already logged in!")
+        return redirect("accounts:dashboard")
+    elif request.method == "POST":
         # print(request.POST)
         # print("FILES", request.FILES)
         form = UserForm(request.POST)
@@ -93,3 +99,33 @@ def registerVendor(request):
     }
 
     return render(request, "accounts/registerVendor.html", context)
+
+
+def login(request):
+    if request.user.is_authenticated:
+        messages.warning(request, "You are already logged in!")
+        return redirect("accounts:dashboard")
+    elif request.method == "POST":
+        email = request.POST["email"]
+        password = request.POST["password"]
+
+        user: User = auth.authenticate(email=email, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            messages.success(request, "You are now logged in.")
+            return redirect("accounts:dashboard")
+        else:
+            messages.error(request, "Invalid login credentials")
+            return redirect("accounts:login")
+    return render(request, "accounts/login.html")
+
+
+def logout(request):
+    auth.logout(request)
+    messages.info(request, "You are logged out.")
+    return redirect("accounts:login")
+
+
+def dashboard(request):
+    return render(request, "accounts/dashboard.html")
