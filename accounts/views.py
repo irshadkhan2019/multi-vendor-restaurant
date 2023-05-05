@@ -5,7 +5,12 @@ from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.models import Vendor
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .utils import detectUser, check_role_customer, check_role_vendor
+from .utils import (
+    detectUser,
+    check_role_customer,
+    check_role_vendor,
+    send_verification_email,
+)
 
 
 # Create your views here.
@@ -41,6 +46,9 @@ def registerUser(request):
             )
             user.role = User.CUSTOMER
             user.save()
+
+            # send mail
+            send_verification_email(request, user)
 
             messages.success(request, "Your account has been registered successfully")
             return redirect("accounts:registerUser")
@@ -83,6 +91,10 @@ def registerVendor(request):
             vendor.user = user
             vendor.user_profile = UserProfile.objects.get(user=user)
             vendor.save()
+
+            # send mail
+            send_verification_email(request, user)
+
             messages.success(
                 request,
                 "Your account has been registered sucessfully! Please wait for the approval.",
@@ -149,3 +161,8 @@ def custDashboard(request):
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
     return render(request, "accounts/vendorDashboard.html")
+
+
+def activate(request, uidb64, token):
+    print(request, uidb64, token)
+    return redirect("accounts:myAccount")
