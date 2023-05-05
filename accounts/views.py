@@ -4,8 +4,8 @@ from vendor.forms import VendorForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.models import Vendor
-from django.contrib.auth.decorators import login_required
-from .utils import detectUser
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .utils import detectUser, check_role_customer, check_role_vendor
 
 
 # Create your views here.
@@ -140,10 +140,12 @@ def myAccount(request):
 
 
 @login_required(login_url="accounts:login")
+@user_passes_test(check_role_customer)
 def custDashboard(request):
     return render(request, "accounts/custDashboard.html")
 
 
 @login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def vendorDashboard(request):
     return render(request, "accounts/vendorDashboard.html")
