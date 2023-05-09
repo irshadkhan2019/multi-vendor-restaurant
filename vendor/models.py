@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User, UserProfile
+from accounts.utils import send_notification
 
 
 # Create your models here.
@@ -16,3 +17,28 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.vendor_name
+
+    # intercept save fn when model is saved
+    def save(self, *args, **kwargs):
+        # print("Changes made in Vendor model", (self.user), self.pk)
+        if self.pk is not None:
+            original = Vendor.objects.get(pk=self.pk)
+            # print("OG", original.is_approved)
+            # print("NEW", self.is_approved)
+            if original.is_approved != self.is_approved:
+                mail_template = "accounts/emails/admin_approval_email.html"
+                context = {
+                    "user": self.user,
+                    "is_approved": self.is_approved,
+                    "to_email": self.user.email,
+                }
+                if self.is_approved == True:
+                    # Send notification email
+                    mail_subject = "Congratulations! Your restaurant has been approved."
+                    send_notification(mail_subject, mail_template, context)
+                else:
+                    # Send notification email
+                    mail_subject = "We're sorry! You are not eligible for publishing your food menu on our marketplace."
+                    send_notification(mail_subject, mail_template, context)
+
+        return super(Vendor, self).save(*args, **kwargs)
