@@ -32,12 +32,11 @@ def check_role_customer(user):
         raise PermissionDenied
 
 
-def send_verification_email(request, user):
+def send_verification_email(request, user, mail_subject, email_template):
     from_email = settings.DEFAULT_FROM_EMAIL
     current_site = get_current_site(request)
-    mail_subject = "Please activate Your account"
     message = render_to_string(
-        "accounts/emails/account_vertification_email.html",
+        email_template,
         {
             "user": user,
             "domain": current_site,
