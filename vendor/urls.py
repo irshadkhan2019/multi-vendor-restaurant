@@ -11,4 +11,6 @@ urlpatterns = [
         views.fooditems_by_category,
         name="fooditems_by_category",
     ),
+    # category CRUD
+    path("menu-builder/category/add", views.add_category, name="add_category"),
 ]

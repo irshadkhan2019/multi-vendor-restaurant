@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.utils import check_role_vendor
 from menu.models import Category, FoodItem
+from menu.forms import CategoryForm
+from django.template.defaultfilters import slugify
 
 
 # Create your views here.
@@ -65,3 +67,27 @@ def fooditems_by_category(request, pk):
         "category": category,
     }
     return render(request, "vendor/fooditems_by_category.html", context)
+
+
+@login_required(login_url="login")
+@user_passes_test(check_role_vendor)
+def add_category(request):
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category_name = form.cleaned_data["category_name"]
+            category = form.save(commit=False)
+            category.vendor = Vendor.objects.get(user=request.user)
+            category.slug = slugify(category_name)
+            category.save()
+            messages.success(request, "Category added successfully!")
+            return redirect("accounts:vendor:menu_builder")
+        else:
+            print(form.errors)
+
+    else:
+        form = CategoryForm()
+    context = {
+        "form": form,
+    }
+    return render(request, "vendor/add_category.html", context)
