@@ -38,8 +38,8 @@
                                     </td>
                               
                                     <td>
-                                      <a href="#"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp; 
-                                      <a href="#"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>
+                                      <a href="{% url 'accounts:vendor:edit_food' food.pk %}"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp; 
+                                      <a href="{% url 'accounts:vendor:delete_food' food.pk %}" onclick="return confirm('Are you sure you want to delete this category?')"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a>
                                     </td>
                                   </tr>
                                 {% endfor %}
@@ -48,7 +48,7 @@
                             {% else %}
                               <h5 class="text-center">No food items found.</h5>
                               <div class="text-center">
-                                  <a href="#" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add Food</a>
+                                  <a href="{% url 'accounts:vendor:add_food' %}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add Food</a>
                               </div>
 
                             {% endif %}
