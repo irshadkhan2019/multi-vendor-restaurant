@@ -23,4 +23,6 @@ urlpatterns = [
         views.delete_category,
         name="delete_category",
     ),
+    # FoodItem CRUD
+    path("menu-builder/food/add/", views.add_food, name="add_food"),
 ]
