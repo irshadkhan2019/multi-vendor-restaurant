@@ -34,6 +34,7 @@
 																		<li class="gal-img">
 																			<div class="drag-list">
 																				<div class="item-thumb">
+																					<!-- For empty values check (new accounts) -->
 																					{% if profile.profile_picture %}
 																					<img class="thumbnail" src="{{profile.profile_picture.url}}" alt="Profile Picture">
 																					{% else %}
@@ -62,6 +63,7 @@
 																		<li class="gal-img">
 																			<div class="drag-list">
 																				<div class="item-thumb">
+																					<!-- For empty values check (new accounts) -->
 																					{% if profile.cover_photo %}
 																					<img class="thumbnail" src="{{profile.cover_photo.url}}" alt="Cover Photo">
 																					{% else %}
