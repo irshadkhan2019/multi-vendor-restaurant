@@ -36,6 +36,13 @@
                                         <a href="#"><p class="mb-0 font-weight-bold">{{ food }}</p>
                                         <small class="text-muted">{{food.description}}</small></a>
                                     </td>
+                                    <td>
+                                    {% if food.is_available %}
+                                        <span class="badge badge-success">Available</span>
+                                    {% else %}
+                                        <span class="badge badge-warning">Not Available</span>
+                                    {% endif %}
+                                    </td>
                               
                                     <td>
                                       <a href="{% url 'accounts:vendor:edit_food' food.pk %}"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp; 
