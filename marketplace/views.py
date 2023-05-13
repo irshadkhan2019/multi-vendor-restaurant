@@ -25,10 +25,12 @@ def vendor_detail(request, vendor_slug):
         # is fk in FoodItem model.
         Prefetch("fooditems", queryset=FoodItem.objects.filter(is_available=True))
     )
+    cart_items = Cart.objects.filter(user=request.user)
 
     context = {
         "vendor": vendor,
         "categories": categories,
+        "cart_items": cart_items,
     }
 
     return render(request, "marketplace/vendor_detail.html", context)

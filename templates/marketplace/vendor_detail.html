@@ -117,17 +117,20 @@
                               <span class="price">{{fooditem.price}}</span>
 
                               <a href="#" class="decrease_cart" style="margin-right:28px;"><i class="icon-minus text-danger"></i></a>
-                                <label id="qty">0</label>
+                                <label id="qty-{{fooditem.pk}}">0</label>
                               <a href="#" class="add_to_cart" data-id="{{fooditem.pk}}" data-url="{% url 'market:add_to_cart' fooditem.pk %}"><i class="icon-plus4 text-success"></i></a>
                             
                             </div>
                           </li>
                           {% endfor %}
+                        </ul>
                         {% endfor %}
                         
-                        </ul>
-                        
                       </div>
+                      {% for item in cart_items %}
+                        <span id="qty-{{item.fooditem.id}}" class="item_qty" data-qty={{item.quantity}}>{{item.quantity}}</span>
+                      {% endfor %}
+
                     </div>
                   </div>
                   

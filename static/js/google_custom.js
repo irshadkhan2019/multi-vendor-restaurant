@@ -66,7 +66,6 @@ function onPlaceChanged (){
 }
 
 // cart fn
-
 $(document).ready(function(){
  $('.add_to_cart').on('click',function(e){
     e.preventDefault();
@@ -87,4 +86,15 @@ $(document).ready(function(){
     })
 
  })
+
+ //place the cartitem quantity on load  
+ $('.item_qty').each(function(){
+    var _id=$(this).attr('id')
+    var quantity=$(this).attr('data-qty')
+
+    //change the count 
+    //<label id="qty-{{fooditem.pk}}">0</label> --> $('#'+_id)->qty-id
+    $('#'+_id).html(quantity)
+ })
 });
+
