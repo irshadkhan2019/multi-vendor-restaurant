@@ -26,7 +26,10 @@ def vendor_detail(request, vendor_slug):
         # is fk in FoodItem model.
         Prefetch("fooditems", queryset=FoodItem.objects.filter(is_available=True))
     )
-    cart_items = Cart.objects.filter(user=request.user)
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+    else:
+        cart_items = None
 
     context = {
         "vendor": vendor,
@@ -81,5 +84,49 @@ def add_to_cart(request, food_id):
 
     else:
         return JsonResponse(
-            {"status": "Failed", "message": "Please login to continue "}
+            {"status": "login_required", "message": "Please login to continue "}
+        )
+
+
+def decrease_cart(request, food_id):
+    if request.user.is_authenticated:
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            # Check if the food item exists
+            try:
+                fooditem = FoodItem.objects.get(id=food_id)
+                # Check if the user has already added that food to the cart
+                try:
+                    checkCart = Cart.objects.get(user=request.user, fooditem=fooditem)
+                    if checkCart.quantity > 1:
+                        # decrease the cart quantity
+                        checkCart.quantity -= 1
+                        checkCart.save()
+                    else:
+                        checkCart.delete()
+                        checkCart.quantity = 0
+                    return JsonResponse(
+                        {
+                            "status": "Success",
+                            "message": "Removed fooditem from cart",
+                            "cart_counter": get_cart_counter(request),
+                            "quantity": checkCart.quantity,
+                        }
+                    )
+                except:
+                    return JsonResponse(
+                        {
+                            "status": "Failed",
+                            "message": "You do not have this item in your cart!",
+                        }
+                    )
+            except:
+                return JsonResponse(
+                    {"status": "Failed", "message": "This food does not exist!"}
+                )
+        else:
+            return JsonResponse({"status": "Failed", "message": "Invalid request!"})
+
+    else:
+        return JsonResponse(
+            {"status": "login_required", "message": "Please login to continue"}
         )

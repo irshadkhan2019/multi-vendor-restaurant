@@ -67,6 +67,7 @@ function onPlaceChanged (){
 
 // cart fn
 $(document).ready(function(){
+    //ADD TO CART
  $('.add_to_cart').on('click',function(e){
     e.preventDefault();
     
@@ -82,10 +83,56 @@ $(document).ready(function(){
         data:data,
         success:function(response){
             console.log(response);
-            // update cart count
-            $('#cart_counter').html(response.cart_counter.cart_count)
-            // update food count 
-            $('#qty-'+food_id).html(response.quantity)
+            if(response.status == 'login_required'){
+                swal(response.message, '', 'info').then(function(){
+                    window.location = '/login';
+                })
+            }else if(response.status == 'Failed'){
+                swal(response.message, '', 'error')
+            }else{
+
+                console.log(response);
+                // update cart count
+                $('#cart_counter').html(response.cart_counter.cart_count)
+                // update food count 
+                $('#qty-'+food_id).html(response.quantity)
+            }
+
+
+        }
+    })
+
+ })
+
+//  remove from cart
+$('.decrease_cart').on('click',function(e){
+    e.preventDefault();
+    
+    food_id=$(this).attr('data-id');
+    url=$(this).attr('data-url');
+    data={
+        food_id:food_id,
+    }
+  
+    $.ajax({
+        type:"GET",
+        url: url,
+        data:data,
+        success:function(response){
+                console.log(response);
+                if(response.status == 'login_required'){
+                    swal(response.message, '', 'info').then(function(){
+                        window.location = '/login';
+                    })
+                }else if(response.status == 'Failed'){
+                    swal(response.message, '', 'error')
+                }else{
+
+                 // update cart count
+                 $('#cart_counter').html(response.cart_counter.cart_count)
+                 // update food count 
+                 $('#qty-'+food_id).html(response.quantity)
+             }
 
         }
     })
@@ -101,5 +148,7 @@ $(document).ready(function(){
     //<label id="qty-{{fooditem.pk}}">0</label> --> $('#'+_id)->qty-id
     $('#'+_id).html(quantity)
  })
+
+
 });
 
