@@ -118,7 +118,7 @@
 
                               <a href="#" class="decrease_cart" style="margin-right:28px;"><i class="icon-minus text-danger"></i></a>
                                 <label id="qty">0</label>
-                              <a href="#" class="add_to_cart "><i class="icon-plus4 text-success"></i></a>
+                              <a href="#" class="add_to_cart" data-id="{{fooditem.pk}}" data-url="{% url 'market:add_to_cart' fooditem.pk %}"><i class="icon-plus4 text-success"></i></a>
                             
                             </div>
                           </li>
