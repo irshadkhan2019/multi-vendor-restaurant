@@ -30,3 +30,7 @@ def vendor_detail(request, vendor_slug):
     }
 
     return render(request, "marketplace/vendor_detail.html", context)
+
+
+def add_to_cart(request, food_id):
+    pass
