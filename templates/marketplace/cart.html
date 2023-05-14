@@ -41,7 +41,7 @@
                               <a href="#" class="decrease_cart" style="margin-right:28px;" data-id="{{item.fooditem.pk}}" data-url="{% url 'market:decrease_cart' item.fooditem.pk %}" ><i class="icon-minus text-danger"></i></a>
                                 <label id="qty-{{item.fooditem.pk}}">0</label>
                               <a href="#" class="add_to_cart" data-id="{{item.fooditem.pk}}" data-url="{% url 'market:add_to_cart' item.fooditem.pk %}"><i class="icon-plus4 text-success"></i></a>
-                            
+                              <a href="#" class="delete_cart" data-id="{{item.pk}}" data-url="{% url 'market:delete_cart' item.pk %}"><i class="icon-bin text-danger"></i></a>
                             </div>
                           </li>
                           {% endfor %}
