@@ -23,13 +23,17 @@
                     <div class="menu-itam-holder">
                       
                       <div id="menu-item-list-6272" class="menu-itam-list">
+
+                        <div id="empty-cart" class="text-center p-5" style="display:none">
+                          <h3>Cart is empty</h3>
+                        </div>  
                         
                      <ul> 
                        {% if cart_items %}
                         
                           {% for item in cart_items %}
                   
-                          <li>
+                          <li id="cart-item-{{item.pk}}">
                             <div class="image-holder"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
                             <div class="text-holder">
                               <h6>{{item.fooditem.food_title}}</h6>
