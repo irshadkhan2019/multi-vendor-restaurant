@@ -104,11 +104,13 @@ $(document).ready(function(){
 
  })
 
+ 
 //  remove from cart
 $('.decrease_cart').on('click',function(e){
     e.preventDefault();
     
     food_id=$(this).attr('data-id');
+    cart_id=$(this).attr('id');
     url=$(this).attr('data-url');
     data={
         food_id:food_id,
@@ -132,6 +134,12 @@ $('.decrease_cart').on('click',function(e){
                  $('#cart_counter').html(response.cart_counter.cart_count)
                  // update food count 
                  $('#qty-'+food_id).html(response.quantity)
+
+                 if(window.location.pathname =='/marketplace/show/cart'){
+                  removeCartItem(response.quantity,cart_id)
+                  showEmptyCart()
+                 }
+
              }
 
         }
@@ -170,7 +178,8 @@ $('.decrease_cart').on('click',function(e){
     //  delete cart element if the qty is 0
 
     function removeCartItem(cartItemQty,cart_id){
-        if(cartItemQty<=0){
+
+        if(cartItemQty<=0 ){
             document.getElementById("cart-item-"+cart_id).remove();
         }
     }
