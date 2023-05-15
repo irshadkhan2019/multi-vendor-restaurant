@@ -4,7 +4,7 @@ from vendor.models import Vendor
 from menu.models import Category, FoodItem
 from django.db.models import Prefetch
 from .models import Cart
-from .context_processors import get_cart_counter
+from .context_processors import get_cart_counter, get_cart_amounts
 from django.contrib.auth.decorators import login_required
 
 
@@ -62,6 +62,7 @@ def add_to_cart(request, food_id):
                             "message": "increased the cart quantity",
                             "cart_counter": get_cart_counter(request),
                             "quantity": checkCart.quantity,
+                            "cart_amount": get_cart_amounts(request),
                         }
                     )
                 except:
@@ -74,6 +75,7 @@ def add_to_cart(request, food_id):
                             "message": "Added food to cart",
                             "cart_counter": get_cart_counter(request),
                             "quantity": checkCart.quantity,
+                            "cart_amount": get_cart_amounts(request),
                         }
                     )
             except:
@@ -111,6 +113,7 @@ def decrease_cart(request, food_id):
                             "message": "Removed fooditem from cart",
                             "cart_counter": get_cart_counter(request),
                             "quantity": checkCart.quantity,
+                            "cart_amount": get_cart_amounts(request),
                         }
                     )
                 except:
@@ -156,6 +159,7 @@ def delete_cart(request, cart_id):
                             "status": "Success",
                             "message": "Cart item has been deleted!",
                             "cart_counter": get_cart_counter(request),
+                            "cart_amount": get_cart_amounts(request),
                         }
                     )
             except:

@@ -96,9 +96,14 @@ $(document).ready(function(){
                 $('#cart_counter').html(response.cart_counter.cart_count)
                 // update food count 
                 $('#qty-'+food_id).html(response.quantity)
+
+                applyCartAmounts(
+                    response.cart_amount['subtotal'],
+                    response.cart_amount['tax'],
+                    response.cart_amount['grand_total']
+                    )
+
             }
-
-
         }
     })
 
@@ -139,6 +144,12 @@ $('.decrease_cart').on('click',function(e){
                   removeCartItem(response.quantity,cart_id)
                   showEmptyCart()
                  }
+                 console.log(response)
+                 applyCartAmounts(
+                    response.cart_amount['subtotal'],
+                    response.cart_amount['tax'],
+                    response.cart_amount['grand_total']
+                    )
 
              }
 
@@ -168,6 +179,12 @@ $('.decrease_cart').on('click',function(e){
                     swal(response.status, response.message, "success")
                     removeCartItem(0,cart_id)
                     showEmptyCart()
+                    console.log(response)
+                    applyCartAmounts(
+                        response.cart_amount['subtotal'],
+                        response.cart_amount['tax'],
+                        response.cart_amount['grand_total']
+                        )
                 }
     
             }
@@ -193,6 +210,15 @@ $('.decrease_cart').on('click',function(e){
                 document.getElementById("empty-cart").style.display="block";
             }
         }
+     
+    function applyCartAmounts(subtotal,tax,grand_total){
+        if(window.location.pathname =='/marketplace/show/cart'){
+            $('#total').html(grand_total)
+            $('#subtotal').html(subtotal)
+            $('#tax').html(tax)
+        }
+
+    }    
 
  //place the cartitem quantity on load  
  $('.item_qty').each(function(){
