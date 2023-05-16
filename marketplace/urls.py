@@ -11,6 +11,7 @@ urlpatterns = [
     path("decrease_cart/<int:food_id>/", views.decrease_cart, name="decrease_cart"),
     # show cart Items
     path("show/cart", views.cart, name="cart"),
+    path("show/search", views.search, name="search"),
     # DELETE CART ITEM
     path("delete_cart/<int:cart_id>/", views.delete_cart, name="delete_cart"),
 ]
