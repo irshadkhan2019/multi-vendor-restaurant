@@ -174,8 +174,18 @@ def search(request):
     address = request.GET["address"]
     latitude = request.GET["lat"]
     longitude = request.GET["lng"]
-    rest_name = request.GET["rest_name"]
+    keyword = request.GET["keyword"]
     radius = request.GET["radius"]
 
-    print(address, radius, longitude)
-    return render(request, "marketplace/listings.html")
+    vendors = Vendor.objects.filter(
+        vendor_name__icontains=keyword,
+        is_approved=True,
+        user__is_active=True,
+    )
+    vendor_count = vendors.count()
+
+    context = {
+        "vendors": vendors,
+        "vendor_count": vendor_count,
+    }
+    return render(request, "marketplace/listings.html", context)
