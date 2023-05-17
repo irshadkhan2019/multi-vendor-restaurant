@@ -72,5 +72,20 @@
       console.log(position)
         var lat = position.coords.latitude
         var lng = position.coords.longitude
+
+        //send lat lng to googlemaps api to get address
+        var GOOGLE_API_KEY="{{GOOGLE_API_KEY}}"
+        var url="https://maps.googleapis.com/maps/api/geocode/json?latlng="+lat+","+lng+"+&key="+GOOGLE_API_KEY;
+
+
+        $.ajax({
+          url:url,
+          type:"GET",
+          success:function(response){
+  
+            var cur_location=response.results[0].formatted_address
+            x.value=cur_location
+          }
+        })
     }
     </script>
