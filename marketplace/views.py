@@ -8,6 +8,9 @@ from .context_processors import get_cart_counter, get_cart_amounts
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+
 
 # Create your views here.
 def marketplace(request):
@@ -182,16 +185,30 @@ def search(request):
         food_title__icontains=keyword, is_available=True
     ).values_list("vendor", flat=True)
 
-    vendors = Vendor.objects.filter(
-        Q(id__in=fetch_vendors_by_fooditems)
-        | Q(
-            vendor_name__icontains=keyword,
-            is_approved=True,
-            user__is_active=True,
+    if latitude and longitude and radius:
+        # Distances will be calculated from this point, which does not have to be projected.
+        pnt = GEOSGeometry("POINT(%s %s)" % (longitude, latitude))
+        print("inside if")
+        vendors = Vendor.objects.filter(
+            Q(id__in=fetch_vendors_by_fooditems)
+            | Q(
+                vendor_name__icontains=keyword,
+                is_approved=True,
+                user__is_active=True,
+            )
+            | Q(user_profile__location__distance_lte=(pnt, D(km=radius)))
         )
-    )
-    print(vendors)
+    else:
+        vendors = Vendor.objects.filter(
+            Q(id__in=fetch_vendors_by_fooditems)
+            | Q(
+                vendor_name__icontains=keyword,
+                is_approved=True,
+                user__is_active=True,
+            )
+        )
     vendor_count = vendors.count()
+    print(vendors)
 
     context = {
         "vendors": vendors,
