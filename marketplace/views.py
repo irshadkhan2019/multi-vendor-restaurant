@@ -1,5 +1,5 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
 from django.db.models import Prefetch
@@ -10,6 +10,7 @@ from django.db.models import Q
 
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 
 
 # Create your views here.
@@ -189,15 +190,25 @@ def search(request):
         # Distances will be calculated from this point, which does not have to be projected.
         pnt = GEOSGeometry("POINT(%s %s)" % (longitude, latitude))
         print("inside if")
-        vendors = Vendor.objects.filter(
-            Q(id__in=fetch_vendors_by_fooditems)
-            | Q(
-                vendor_name__icontains=keyword,
-                is_approved=True,
-                user__is_active=True,
-            )
-            | Q(user_profile__location__distance_lte=(pnt, D(km=radius)))
+        vendors = (
+            Vendor.objects.filter(
+                Q(id__in=fetch_vendors_by_fooditems)
+                | Q(
+                    vendor_name__icontains=keyword,
+                    is_approved=True,
+                    user__is_active=True,
+                )
+                | Q(user_profile__location__distance_lte=(pnt, D(km=radius)))
+            )  # adds calculated distance field to each vendor wrt to pnt
+            .annotate(distance=Distance("user_profile__location", pnt))
+            .order_by("distance")
         )
+        # print(vendors[0].distance)
+        # add distance as km field
+        for vendor in vendors:
+            vendor.kms = round(vendor.distance.km, 1)
+
+        # print(vendors[0].kms)
     else:
         vendors = Vendor.objects.filter(
             Q(id__in=fetch_vendors_by_fooditems)
@@ -208,10 +219,10 @@ def search(request):
             )
         )
     vendor_count = vendors.count()
-    print(vendors)
 
     context = {
         "vendors": vendors,
         "vendor_count": vendor_count,
+        "source_location": address,
     }
     return render(request, "marketplace/listings.html", context)
