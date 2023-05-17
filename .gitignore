@@ -172,3 +172,4 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+GDAL-3.4.3-cp38-cp38-win_amd64.whl
