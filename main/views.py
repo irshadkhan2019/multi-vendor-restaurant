@@ -5,12 +5,26 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 
 
-# Create your views here.
-def home(request):
-    if "lat" and "lng" in request.GET:
+def get_or_set_current_location(request):
+    if "lat" in request.session:
+        lat = request.session["lat"]
+        lng = request.session["lng"]
+        return lng, lat
+    elif "lat" in request.GET:
         lat = request.GET.get("lat")
         lng = request.GET.get("lng")
-        pnt = GEOSGeometry("POINT(%s %s)" % (lng, lat))
+        # set session
+        request.session["lat"] = lat
+        request.session["lng"] = lng
+        return lng, lat
+    else:
+        return None
+
+
+# Create your views here.
+def home(request):
+    if get_or_set_current_location(request) is not None:
+        pnt = GEOSGeometry("POINT(%s %s)" % (get_or_set_current_location(request)))
         vendors = (
             Vendor.objects.filter(
                 user_profile__location__distance_lte=(pnt, D(km=100))
@@ -18,6 +32,7 @@ def home(request):
             .annotate(distance=Distance("user_profile__location", pnt))
             .order_by("distance")
         )
+        # print(request.session["lat"])
         # add distance as km field
         for vendor in vendors:
             vendor.kms = round(vendor.distance.km, 1)
