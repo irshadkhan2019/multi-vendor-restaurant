@@ -59,6 +59,10 @@
 
   <script>
     var x = document.getElementById("location");
+    var cur_location=sessionStorage.getItem("cur_location")
+    if(cur_location){
+      x.value=cur_location
+    }
  
     function getLocation() {
         if (navigator.geolocation) {
@@ -85,6 +89,8 @@
   
             var cur_location=response.results[0].formatted_address
             x.value=cur_location
+            sessionStorage.setItem("cur_location",cur_location)
+            window.location="?lat="+lat+"&lng="+lng
           }
         })
     }
