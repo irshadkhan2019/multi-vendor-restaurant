@@ -52,6 +52,8 @@
                                             {{form.is_closed}} Set as closed
                                         </div>
                                         <div class="col-md-2">
+                                            <!-- provide url for ajax request in googlecustom js-->
+                                            <input type="hidden" value="{% url 'accounts:vendor:add_opening_hours' %}" id="add_hour_url">
                                             <button class="btn btn-success add_hour">Add Hours</button>
                                         </div>
                                     </div>
