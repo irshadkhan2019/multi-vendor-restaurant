@@ -230,6 +230,18 @@ $('.decrease_cart').on('click',function(e){
     $('#'+_id).html(quantity)
  })
 
+//  submit hour form data
+$('.add_hour').on('click',function(e){
+    e.preventDefault();
+    var day=document.getElementById('id_day').value
+    var from_hour=document.getElementById('id_from_hour').value
+    var to_hour=document.getElementById('id_to_hour').value
+    var is_closed=document.getElementById('id_is_closed').checked
+    // get value from name
+    var csrf_token=$('input[name=csrfmiddlewaretoken]').val()
+    console.log(day,from_hour,to_hour,is_closed,csrf_token)
+})
 
+//  document ready close
 });
 
