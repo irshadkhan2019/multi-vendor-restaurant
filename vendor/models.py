@@ -75,3 +75,7 @@ class OpeningHour(models.Model):
     class Meta:
         ordering = ("day", "-from_hour")
         unique_together = ("vendor", "day", "from_hour", "to_hour")
+
+    # get_fiedname_display() inbuild fn in a Model
+    def __str__(self):
+        return self.get_day_display()  # to get label Monday instead of value 1

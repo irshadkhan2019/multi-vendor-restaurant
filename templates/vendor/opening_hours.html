@@ -19,8 +19,44 @@
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
                             <h5 class="text-uppercase">Opening Hours</h5>
-							              <hr>
-                          
+                            <!-- DIsplay opening hrs-->
+							    <hr>
+                                <table class="table opening_hours" style="width: 500px; border: none !important;">
+                                    <tbody>
+                                        {% for hour in opening_hours %}
+                                            <tr>
+                                                <td><b>{{hour}}</b></td>
+                                                <td>{% if hour.is_closed %}Close {% else %}{{ hour.from_hour}} - {{hour.to_hour}} {% endif %}</td>
+                                                <td><a href="#" class="remove_hour"> Remove</a></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <hr>
+                                <br>
+
+                                <!--FORM section-->
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            {{form.day}}
+                                        </div>
+                                        <div class="col-md-2">
+                                            {{form.from_hour}}
+                                        </div>
+                                        <div class="col-md-2">
+                                            {{form.to_hour}}
+                                        </div>
+                                        <div class="col-md-3">
+                                            {{form.is_closed}} Set as closed
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-success add_hour">Add Hours</button>
+                                        </div>
+                                    </div>
+
+                                </form>   
+
                         </div>
                     </div>
                 </div>
