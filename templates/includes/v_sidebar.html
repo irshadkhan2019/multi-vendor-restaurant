@@ -4,6 +4,7 @@
       <li class="{% if 'vendorDashboard' in request.path %}active{% endif %}"><a href="{% url 'accounts:vendorDashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
       <li class="{% if 'vendor/profile' in request.path %}active{% endif %}"><a href="{% url 'accounts:vendor:vprofile' %}"><i class="icon-building"></i>My Restaurant </a></li>
       <li class="{% if 'vendor/menu-builder' in request.path %}active{% endif %}"><a href=" {% url 'accounts:vendor:menu_builder' %}"><i class="icon-menu5"></i>Menu Builder</a></li>
+      <li class="{% if 'opening-hours' in request.path %}active{% endif %}"><a href=" {% url 'accounts:vendor:opening_hours' %}"><i class="icon-clock"></i>Opening Hours</a></li>
       <li><a href="restaurant-orders.html"><i class="icon-add_shopping_cart"></i>Orders</a></li>
       <li><a href="restaurant-earnings.html"><i class="icon-money"></i>Earnings</a></li>
       <li><a href="restaurant-statement.html"><i class="icon-file-text22"></i>Statement</a></li>
