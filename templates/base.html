@@ -13,6 +13,7 @@
 	<!-- Google Font Family Link End -->
 
 	<!-- CSS -->
+	<link href="{% static 'css/custom.css' %}" rel="stylesheet">
 	<link href="{% static 'css/iconmoon.css' %}" rel="stylesheet">
 	<link href="{% static 'css/style.css' %}" rel="stylesheet">
 	<link href="{% static 'css/cs-foodbakery-plugin.css' %}" rel="stylesheet">
@@ -32,7 +33,9 @@
 
 		<!-- GOOGLE MAPS SCRIPT load script in profile edit page -->
 
+		{% if '/' == request.path or 'profile' in request.path %}
 		 <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" async defer></script>
+		{% endif %}
 
 	
 	<script src="{% static 'js/google_custom.js' %}"></script>
