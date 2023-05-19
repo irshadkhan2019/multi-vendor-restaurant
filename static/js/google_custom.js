@@ -264,23 +264,30 @@ $('.add_hour').on('click',function(e){
             },
             success: function(response){
                 console.log(response)
+                if(response.status=="success"){
+                    if(response.is_closed){
+                        html='<tr><td><b>'+response.day+'</b></td><td>Closed</td><td><a href="#" class="remove_hour"> Remove</a></td></tr>';
+                        // console.log(html)
+                    }else{
+                        html='<tr><td><b>'+response.day+'</b></td><td>'+ response.from_hour+'-'+response.to_hour + '</td><td><a href="#" class="remove_hour"> Remove</a></td></tr>';
+                        // console.log(html)
+                    }
+                    // append the inserted data to dispaly it daynamically
+                    $(".opening_hours").append(html)
+
+                    // reset the form
+                    document.getElementById("opening_hours").reset();
+                }else{
+                    swal(response.message, '', "error")
+                } 
             }
         })
+    }else{
+        swal('Please fill all fields', '', 'info')
     }
 
 
-
-        
-
-    
-
-
-
 })
-
-
-
-
 
 //  document ready close
 });

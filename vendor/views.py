@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .forms import VendorForm, OpeningHourForm
 from accounts.forms import UserProfileForm
+from django.db import IntegrityError
 
 from accounts.models import UserProfile
 from .models import Vendor, OpeningHour
@@ -254,7 +255,7 @@ def add_opening_hours(request):
                             "to_hour": hour.to_hour,
                         }
                 return JsonResponse(response)
-            except:
+            except IntegrityError as e:
                 response = {
                     "status": "failed",
                     "message": from_hour
