@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from .forms import VendorForm, OpeningHourForm
 from accounts.forms import UserProfileForm
@@ -214,4 +215,53 @@ def opening_hours(request):
 
 
 def add_opening_hours(request):
-    return HttpResponse("Adding opening hrs")
+    if request.user.is_authenticated:
+        if (  # check if its ajax resource
+            request.headers.get("x-requested-with") == "XMLHttpRequest"
+            and request.method == "POST"
+        ):
+            day = request.POST.get("day")
+            from_hour = request.POST.get("from_hour")
+            to_hour = request.POST.get("to_hour")
+            is_closed = request.POST.get("is_closed")
+            print(day, from_hour, to_hour, is_closed)
+
+            try:
+                hour = OpeningHour.objects.create(
+                    vendor=Vendor.objects.get(user=request.user),
+                    day=day,
+                    from_hour=from_hour,
+                    to_hour=to_hour,
+                    is_closed=is_closed,
+                )
+
+                if hour:
+                    day = OpeningHour.objects.get(pk=hour.pk)
+
+                    if day.is_closed:
+                        response = {
+                            "status": "success",
+                            "id": hour.pk,
+                            "day": day.get_day_display(),
+                            "is_closed": "Closed",
+                        }
+                    else:
+                        response = {
+                            "status": "success",
+                            "id": hour.pk,
+                            "day": day.get_day_display(),
+                            "from_hour": hour.from_hour,
+                            "to_hour": hour.to_hour,
+                        }
+                return JsonResponse(response)
+            except:
+                response = {
+                    "status": "failed",
+                    "message": from_hour
+                    + "-"
+                    + to_hour
+                    + " already exists for this day!",
+                }
+                return JsonResponse(response)
+        else:
+            return HttpResponse("Invalid Request")
