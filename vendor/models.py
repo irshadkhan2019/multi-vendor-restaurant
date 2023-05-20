@@ -1,7 +1,7 @@
 from django.db import models
 from accounts.models import User, UserProfile
 from accounts.utils import send_notification
-from datetime import time
+from datetime import time, datetime, date
 
 
 # Create your models here.
@@ -20,6 +20,40 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.vendor_name
+
+    # check if the vendor/restaurant is open or not
+    def is_open(self):
+        today_date = date.today()  # eg 2023-02-20
+        today = today_date.isoweekday()  # 1,2,3..7
+        print("TODAY", today, "today_date", today_date)
+
+        # Check current day's opening hours.
+        current_opening_hours = OpeningHour.objects.filter(vendor=self, day=today)
+
+        # time at a particular instance
+        now = datetime.now()  # ->eg 2023-02-20 20:11:28.158092
+        current_time = now.strftime("%H:%M:%S")  # eg ->20:11:28
+        print("now", now, "current_time", current_time)
+        print(type(current_time))  # <class 'str'>
+
+        # check if  current time lies b/w opening hrs of todays date
+        is_open = None
+        for hr in current_opening_hours:
+            if not hr.is_closed:
+                # start = datetime.strptime(hr.from_hour, "%I:%M %p").time()  #  08:00:00
+                # print(type(start))#<class 'datetime.time'>
+                start = str(datetime.strptime(hr.from_hour, "%I:%M %p").time())
+                end = str(datetime.strptime(hr.to_hour, "%I:%M %p").time())
+
+                print(
+                    "start", start, "end", end, type(start)
+                )  # start 08:00:00 end 22:30:00 <class 'str'>
+                if current_time > start and current_time < end:
+                    is_open = True
+                    break
+                else:
+                    is_open = False
+        return is_open
 
     # intercept save fn when model is saved
     def save(self, *args, **kwargs):
