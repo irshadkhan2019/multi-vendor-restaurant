@@ -94,13 +94,18 @@
                                               </span>
                                           </li>
 
-                                          <li style="list-style-type: none; font-weight: 600;">
-                                              TAX
-                                              <span class="price float-right">
-                                                  <span class="currency">$</span>
-                                                  <span id="tax">{{tax}}</span>
-                                              </span>
-                                          </li>
+                                          <!--Display tax  -->
+                                          {% for key,value in tax_dict.items %}
+                                              {% for percent,amt in value.items %}
+                                                  <li style="list-style-type: none; font-weight: 600;">
+                                                    {{key}} <small>( {{percent}} % )</small>
+                                                    <span class="price float-right">
+                                                      <span class="currency">$</span>
+                                                      <span id="tax-{{key}}">{{amt}}</span>
+                                                    </span>
+                                                  </li>
+                                              {% endfor %}
+                                            {% endfor %}
 
                                           <li style="list-style-type: none; font-weight: 600;">
                                                Total
