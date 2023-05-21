@@ -99,7 +99,7 @@ $(document).ready(function(){
 
                 applyCartAmounts(
                     response.cart_amount['subtotal'],
-                    response.cart_amount['tax'],
+                    response.cart_amount['tax_dict'],
                     response.cart_amount['grand_total']
                     )
 
@@ -147,7 +147,7 @@ $('.decrease_cart').on('click',function(e){
                  console.log(response)
                  applyCartAmounts(
                     response.cart_amount['subtotal'],
-                    response.cart_amount['tax'],
+                    response.cart_amount['tax_dict'],
                     response.cart_amount['grand_total']
                     )
 
@@ -182,7 +182,7 @@ $('.decrease_cart').on('click',function(e){
                     console.log(response)
                     applyCartAmounts(
                         response.cart_amount['subtotal'],
-                        response.cart_amount['tax'],
+                        response.cart_amount['tax_dict'],
                         response.cart_amount['grand_total']
                         )
                 }
@@ -211,11 +211,18 @@ $('.decrease_cart').on('click',function(e){
             }
         }
      
-    function applyCartAmounts(subtotal,tax,grand_total){
+    function applyCartAmounts(subtotal,tax_dict,grand_total){
         if(window.location.pathname =='/marketplace/show/cart'){
+            console.log(tax_dict)
             $('#total').html(grand_total)
             $('#subtotal').html(subtotal)
-            $('#tax').html(tax)
+
+            for(key1 in tax_dict){
+                for(key2 in tax_dict[key1]){
+                       $('#tax-'+key1).html(tax_dict[key1][key2]) 
+                }
+            }
+           // $('#tax-').html(tax)
         }
 
     }    
