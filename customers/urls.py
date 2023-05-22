@@ -5,6 +5,5 @@ from . import views
 app_name = "customer"
 
 urlpatterns = [
-    # path("", views.custDashboard, name="custDashboard"),
     path("profile/", views.cprofile, name="cprofile"),
 ]
