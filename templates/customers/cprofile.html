@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+Welcome {{user}}
+My role is {{user.get_role}}
+
+	<!-- Main Section Start -->
+  <div class="main-section">
+     <!-- Cover -->
+     {% include 'customers/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% comment %} NAVIGATION {% endcomment %}
+            {% include 'includes/c_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                  <h5 class="text-uppercase">Profile settings</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Main Section End -->
+
+<div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <!-- Load message -->
+      {% include 'includes/alerts.html' %}
+  </div>
+</div>
+
+{% endblock content %}
