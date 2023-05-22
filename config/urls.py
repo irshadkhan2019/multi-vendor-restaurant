@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from marketplace import views as MarketplaceViews
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("main.urls", namespace="main")),
     path("", include("accounts.urls", namespace="accounts")),
     path("marketplace/", include("marketplace.urls", namespace="market")),
+    path("checkout/", MarketplaceViews.checkout, name="checkout"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

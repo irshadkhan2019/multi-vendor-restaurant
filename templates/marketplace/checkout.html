@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+ 		<!-- Main Section Start -->
+     <div class="main-section pt-5">
+
+      <div class="page-section">
+        <div class="container ">
+          <div class="row">
+          
+            <!-- 1st col Billing address section-->
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+              <div class="tabs-holder horizontal">
+                <ul class="stickynav-tabs nav nav-tabs">
+                  <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Billing address</a></li>
+                </ul>
+
+                <div class="tab-content">
+                  <div id="home" class="tab-pane in active">
+                    <div class="menu-itam-holder">
+                      <div id="menu-item-list-6272" class="menu-itam-list">
+
+                        {% comment %} Billing info {% endcomment %}
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+            <!-- 2nd col-->
+            <!-- payment method section -->
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                  <div class="tabs-holder horizontal">
+                      <ul class="stickynav-tabs nav nav-tabs">
+                          <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Payment Method</a></li> 
+                      </ul>
+                      <div class="tab-content">
+                          <div id="home" class="tab-pane in active">
+                              <div class="menu-itam-holder">
+                                  
+                                   {% comment %} Payment info {% endcomment %}
+                                  
+                              </div>
+                          </div>
+                          
+                      </div>
+                  </div>
+              </div>    
+            
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main Section End -->
+{% endblock %}
+
