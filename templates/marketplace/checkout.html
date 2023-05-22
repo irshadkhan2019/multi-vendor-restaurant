@@ -67,9 +67,9 @@
                               </div>
                           </div>
 
-                        </form>
-                       
                       </div>
+
+                     
                     </div>
                   </div>
                   
@@ -88,9 +88,75 @@
                           <div id="home" class="tab-pane in active">
                               <div class="menu-itam-holder">
                                   
-                                   {% comment %} Payment info {% endcomment %}
-                                  
-                              </div>
+                                <!--Display cart items -->
+                                <div id="menu-item-list-6272" class="menu-itam-list">      
+                                  <ul> 
+                                    {% if cart_items %}
+                                       {% for item in cart_items %}
+                               
+                                       <li id="cart-item-{{item.pk}}">
+                                         <div class="image-holder"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
+                                         <div class="text-holder">
+                                           <h6>{{item.fooditem.food_title}}</h6>
+                                           <span>{{item.fooditem.description}}</span>
+                                           <a href="{% url 'market:vendor_detail' item.fooditem.vendor.vendor_slug %}" class="badge badge-primary">{{item.fooditem.vendor}}</a>
+                                           
+                                         </div>
+                                         <div class="price-holder">
+                                          <div class="quantity" style="display: inline-block; margin-right: 10px;">
+                                            <span>{{ item.quantity }} QTY</span>
+                                          </div>
+                                           <span class="price">{{item.fooditem.price}}</span>
+                                            
+                                         </div>
+                                       </li>
+                                       {% endfor %}
+                                       
+                                     {% else %}
+                                       <div class="text-center p-5">
+                                         <h3>Cart is empty</h3>
+                                       </div>  
+                                     {% endif %}  
+                                 </ul>
+                                </div>  
+                                 <!--END Display cart items -->
+                                <!--total cost and payment method -->
+                              
+                                  <ul>
+                                      <li style="list-style-type: none;">
+                                          Subtotal
+                                          <span class="price float-right">
+                                              <span class="currency">$</span>
+                                              <span id="subtotal">{{subtotal}}</span>
+                                          </span>
+                                      </li>
+
+                                      <!--Display tax  -->
+                                      {% for key,value in tax_dict.items %}
+                                          {% for percent,amt in value.items %}
+                                              <li style="list-style-type: none; font-weight: 600;">
+                                                {{key}} <small>( {{percent}} % )</small>
+                                                <span class="price float-right">
+                                                  <span class="currency">$</span>
+                                                  <span id="tax-{{key}}">{{amt}}</span>
+                                                </span>
+                                              </li>
+                                          {% endfor %}
+                                        {% endfor %}
+
+                                      <li style="list-style-type: none; font-weight: 600;">
+                                           Total
+                                          <span class="price float-right">
+                                              <span class="currency">$</span>
+                                              <span id="total">{{grand_total}}</span>
+                                          </span>
+                                      </li>
+                                      <button  type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
+
+                                  </ul>
+                           
+                                <!-- end cost and payment-->
+                            </div>
                           </div>
                           
                       </div>
@@ -98,6 +164,7 @@
               </div>    
             
             </div>
+          </form>
         </div>
       </div>
     </div>

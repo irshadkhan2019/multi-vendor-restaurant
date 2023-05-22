@@ -246,6 +246,11 @@ def search(request):
 
 
 def checkout(request):
+    cart_items = Cart.objects.filter(user=request.user).order_by("created_at")
+    cart_count = cart_items.count()
+    if cart_count <= 0:
+        return redirect("market:marketplace")
+
     user_profile = UserProfile.objects.get(user=request.user)
     default_values = {
         "first_name": request.user.first_name,
@@ -259,7 +264,9 @@ def checkout(request):
         "pin_code": user_profile.pin_code,
     }
     form = OrderForm(initial=default_values)
+    print(cart_items)
     context = {
         "form": form,
+        "cart_items": cart_items,
     }
     return render(request, "marketplace/checkout.html", context)
