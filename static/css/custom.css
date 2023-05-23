@@ -1,7 +1,7 @@
 #opening_hours select {
-   padding: 5px 10px;
+  padding: 5px 10px;
 }
 
-table>tbody>tr>td {
+table > tbody > tr > td {
   border: none !important;
 }

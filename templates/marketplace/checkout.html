@@ -151,7 +151,19 @@
                                               <span id="total">{{grand_total}}</span>
                                           </span>
                                       </li>
-                                      <button  type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
+                                      <!-- Select Payment Method-->
+                                      <div class="payment-method">
+                                        <label>
+                                          <input type="radio" name="payment_method" value="PayPal">
+                                          <img src="{% static 'images/PayPal.png' %}" alt="Paypal" width="100">
+                                        </label>
+                                        <label>
+                                          <input type="radio" name="payment_method" value="RazorPay">
+                                          <img src="{% static 'images/razorpay_logo.png' %}" alt="RazorPay" width="100">
+                                        </label>
+                                      </div> 
+                                      <span class="text-danger" id="payment-method-error"></span>
+                                      <button onclick="return paymentMethodConfirm()" type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
 
                                   </ul>
                            
@@ -164,10 +176,34 @@
               </div>    
             
             </div>
+            
           </form>
         </div>
       </div>
     </div>
     <!-- Main Section End -->
+    <script>
+       function paymentMethodConfirm(){
+         var paymentMethod=$("input[name='payment_method']:checked").val()
+        // console.log(paymentMethod)
+         if(!paymentMethod){
+          $('#payment-method-error').html("Select Payment method");
+          return false;
+         }else{
+            var conf=confirm('You have selected'+paymentMethod+' as your preferred payment method. \n Click "OK" to continue . ')
+           // console.log(conf)
+            if(conf==true){
+              return true;
+            }else{
+              return false;
+            }
+         }
+       }
+       //remove error when user selects payment method
+      $('input[name=payment_method]').on('change',function(){
+         $('#payment-method-error').html("")
+      })
+
+    </script>
 {% endblock %}
 
