@@ -26,4 +26,5 @@ urlpatterns = [
     path("", include("accounts.urls", namespace="accounts")),
     path("marketplace/", include("marketplace.urls", namespace="market")),
     path("checkout/", MarketplaceViews.checkout, name="checkout"),
+    path("order/", include("orders.urls", namespace="order")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

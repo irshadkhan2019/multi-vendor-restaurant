@@ -22,7 +22,7 @@
                     <div class="menu-itam-holder">
                       <div id="menu-item-list-6272" class="menu-itam-list">
                         <!-- Form-->
-                        <form action="#" method="POST">
+                        <form action="{% url 'order:place_order' %}" method="POST">
                           {% csrf_token %}
 
                           <div class="row">
@@ -164,7 +164,6 @@
                                       </div> 
                                       <span class="text-danger" id="payment-method-error"></span>
                                       <button onclick="return paymentMethodConfirm()" type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
-
                                   </ul>
                            
                                 <!-- end cost and payment-->
