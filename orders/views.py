@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
 from .forms import OrderForm
-from .models import Order
+from .models import Order, Payment
 import simplejson as json
 from .utils import generateOrderNumber
 
@@ -55,5 +55,29 @@ def place_order(request):
 
 
 def payments(request):
-    print(request.POST)
-    return HttpResponse("payment response")
+    # Check if the request is ajax or not
+    if (
+        request.headers.get("x-requested-with") == "XMLHttpRequest"
+        and request.method == "POST"
+    ):
+        # STORE THE PAYMENT DETAILS IN THE PAYMENT MODEL
+        order_number = request.POST.get("order_number")
+        transaction_id = request.POST.get("transaction_id")
+        payment_method = request.POST.get("payment_method")
+        status = request.POST.get("status")
+
+        order = Order.objects.get(user=request.user, order_number=order_number)
+        payment = Payment(
+            user=request.user,
+            transaction_id=transaction_id,
+            payment_method=payment_method,
+            amount=order.total,
+            status=status,
+        )
+        payment.save()
+
+        # UPDATE THE ORDER MODEL
+        order.payment = payment
+        order.is_ordered = True
+        order.save()
+    return HttpResponse(payment, order)
