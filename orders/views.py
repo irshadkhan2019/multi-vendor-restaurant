@@ -107,4 +107,25 @@ def payments(request):
             "to_email": order.email,
         }
         send_notification(mail_subject, mail_template, context)
+
+        # SEND ORDER RECEIVED EMAIL TO VENDORS
+        mail_subject = "You have received a new order."
+        mail_template = "orders/new_order_received.html."
+        to_emails = []
+        for i in cart_items:
+            # only for unique emails send mail
+            if i.fooditem.vendor.user.email not in to_emails:
+                # add email in to_email to skip him if multiple fooditems is there with same vendor.
+                to_emails.append(i.fooditem.vendor.user.email)
+
+                context = {
+                    "user": i.fooditem.vendor.user,
+                    "order": order,
+                    "to_email": i.fooditem.vendor.user.email,
+                }
+                send_notification(mail_subject, mail_template, context)
+
+        # CLEAR THE CART IF THE PAYMENT IS SUCCESS
+        # cart_items.delete()
+
     return HttpResponse("data saved and mail sent")
