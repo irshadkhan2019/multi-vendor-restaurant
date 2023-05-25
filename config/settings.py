@@ -172,6 +172,8 @@ EMAIL_USE_TLS = True
 GOOGLE_API_KEY = config("GOOGLE_API_KEY")
 PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+
 # Configure gdal
 os.environ["PATH"] = (
     os.path.join(BASE_DIR, "env\Lib\site-packages\osgeo") + ";" + os.environ["PATH"]
