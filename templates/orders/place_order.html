@@ -129,8 +129,29 @@
     </div>
     <!-- Main Section End -->
     <script>
+
+      // using jQuery
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie != '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+          var cookie = jQuery.trim(cookies[i]);
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) == (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+      var csrftoken = getCookie('csrftoken');
       var grand_total= '{{grand_total}}'
+      var payment_url="{% url 'order:payments' %}"
+      var order_number={{order.order_number}}
        // Render the PayPal button into #paypal-button-container
+      console.log(payment_url,order_number,csrftoken)
     paypal.Buttons({
 
       // Set up the transaction
@@ -149,12 +170,37 @@
           return actions.order.capture().then(function(orderData) {
               // Successful capture! For demo purposes:
               console.log(orderData)
+              var transaction = orderData.purchase_units[0].payments.captures[0];
+              var transaction_id=transaction.id
+              var status=orderData.status
+              var payment_method="PayPal"
+              console.log(transaction_id,status)
+
+              sendTransaction(transaction_id,status,payment_method)
           
           });
       }
 
-
   }).render('#paypal-button-container');
+
+  //send data to payment view to store in db
+  function sendTransaction(transaction_id,status,payment_method){
+      $.ajax({
+        type:'POST',
+        url:payment_url,
+        data:{
+          'order_number':order_number,
+          'transaction_id':transaction_id,
+          'payment_method':payment_method,
+          'status':status,
+          'csrfmiddlewaretoken':csrftoken
+        },
+        success:function(response){
+          console.log(response)
+        }
+      })
+  }
+
     </script>
 {% endblock %}
 

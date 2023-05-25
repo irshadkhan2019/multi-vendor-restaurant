@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
@@ -46,6 +47,13 @@ def place_order(request):
             order.save()  # order id/ pk is generated
             order.order_number = generateOrderNumber(order.pk)
             order.save()
-            print(order)
-            return redirect("order:place_order")
+            # print(order)
+            context = {"order": order, "cart_items": cart_items}
+
+            return render(request, "orders/place_order.html", context)
     return render(request, "orders/place_order.html")
+
+
+def payments(request):
+    print(request.POST)
+    return HttpResponse("payment response")
