@@ -1,1 +1,181 @@
-place_order
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+ 		<!-- Main Section Start -->
+     <div class="main-section pt-5">
+
+      <div class="page-section">
+        <div class="container ">
+          <div class="row">
+          
+            <!-- 1st col Billing address section-->
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+
+              <div class="tabs-holder horizontal">
+                <ul class="stickynav-tabs nav nav-tabs">
+                  <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Billing address</a></li>
+                </ul>
+
+                <div class="tab-content">
+                  <div id="home" class="tab-pane in active">
+                    <div class="menu-itam-holder">
+                      <div id="menu-item-list-6272" class="menu-itam-list">
+                       
+
+                      </div>
+
+                     
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+
+            <!-- 2nd col-->
+            <!-- payment method section -->
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+                  <div class="tabs-holder horizontal">
+                      <ul class="stickynav-tabs nav nav-tabs">
+                          <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Payment Method</a></li> 
+                      </ul>
+                      <div class="tab-content">
+                          <div id="home" class="tab-pane in active">
+                              <div class="menu-itam-holder">
+                                  
+                                <!--Display cart items -->
+                                {% comment %} <div id="menu-item-list-6272" class="menu-itam-list">      
+                                  <ul> 
+                                    {% if cart_items %}
+                                       {% for item in cart_items %}
+                               
+                                       <li id="cart-item-{{item.pk}}">
+                                         <div class="image-holder"><img src="{{item.fooditem.image.url}}" alt=""></a></div>
+                                         <div class="text-holder">
+                                           <h6>{{item.fooditem.food_title}}</h6>
+                                           <span>{{item.fooditem.description}}</span>
+                                           <a href="{% url 'market:vendor_detail' item.fooditem.vendor.vendor_slug %}" class="badge badge-primary">{{item.fooditem.vendor}}</a>
+                                           
+                                         </div>
+                                         <div class="price-holder">
+                                          <div class="quantity" style="display: inline-block; margin-right: 10px;">
+                                            <span>{{ item.quantity }} QTY</span>
+                                          </div>
+                                           <span class="price">{{item.fooditem.price}}</span>
+                                            
+                                         </div>
+                                       </li>
+                                       {% endfor %}
+                                       
+                                     {% else %}
+                                       <div class="text-center p-5">
+                                         <h3>Cart is empty</h3>
+                                       </div>  
+                                     {% endif %}  
+                                 </ul>
+                                </div>   {% endcomment %}
+                                 <!--END Display cart items -->
+                                <!--total cost and payment method -->
+                              
+                                  <ul>
+                                      <li style="list-style-type: none;">
+                                          Subtotal
+                                          <span class="price float-right">
+                                              <span class="currency">$</span>
+                                              <span id="subtotal">{{subtotal}}</span>
+                                          </span>
+                                      </li>
+
+                                      <!--Display tax  -->
+                                      {% for key,value in tax_dict.items %}
+                                          {% for percent,amt in value.items %}
+                                              <li style="list-style-type: none; font-weight: 600;">
+                                                {{key}} <small>( {{percent}} % )</small>
+                                                <span class="price float-right">
+                                                  <span class="currency">$</span>
+                                                  <span id="tax-{{key}}">{{amt}}</span>
+                                                </span>
+                                              </li>
+                                          {% endfor %}
+                                        {% endfor %}
+
+                                      <li style="list-style-type: none; font-weight: 600;">
+                                           Total
+                                          <span class="price float-right">
+                                              <span class="currency">$</span>
+                                              <span id="total">{{grand_total}}</span>
+                                          </span>
+                                      </li>
+                                      <!-- Select Payment Method-->
+
+                                      <div id="paypal-button-container"></div>
+                                  
+                                  </ul>
+                           
+                                <!-- end cost and payment-->
+                            </div>
+                          </div>
+                          
+                      </div>
+                  </div>
+              </div>    
+            
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Main Section End -->
+    <script>
+      paypal.Buttons({
+        // Order is created on the server and the order id is returned
+        createOrder() {
+          return fetch("/my-server/create-paypal-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            // use the "body" param to optionally pass additional order information
+            // like product skus and quantities
+            body: JSON.stringify({
+              cart: [
+                {
+                  sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
+                  quantity: "YOUR_PRODUCT_QUANTITY",
+                },
+              ],
+            }),
+          })
+          .then((response) => response.json())
+          .then((order) => order.id);
+        },
+        // Finalize the transaction on the server after payer approval
+        onApprove(data) {
+          return fetch("/my-server/capture-paypal-order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderID: data.orderID
+            })
+          })
+          .then((response) => response.json())
+          .then((orderData) => {
+            // Successful capture! For dev/demo purposes:
+            console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+            const transaction = orderData.purchase_units[0].payments.captures[0];
+            alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+            // When ready to go live, remove the alert and show a success message within this page. For example:
+            // const element = document.getElementById('paypal-button-container');
+            // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+            // Or go to another URL:  window.location.href = 'thank_you.html';
+          });
+        }
+      }).render('#paypal-button-container');
+
+    </script>
+{% endblock %}
+

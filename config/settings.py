@@ -75,6 +75,7 @@ TEMPLATES = [
                 "accounts.context_processors.get_vendor",
                 "accounts.context_processors.get_user_profile",
                 "accounts.context_processors.get_google_api",
+                "accounts.context_processors.get_paypal_api",
                 "marketplace.context_processors.get_cart_counter",
                 "marketplace.context_processors.get_cart_amounts",
             ],
@@ -169,6 +170,7 @@ EMAIL_USE_TLS = True
 # DEFAULT_FROM_EMAIL = "foodOnline Marketplace <dj.foodOnline.gmail.com>"
 
 GOOGLE_API_KEY = config("GOOGLE_API_KEY")
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
 
 # Configure gdal
 os.environ["PATH"] = (
