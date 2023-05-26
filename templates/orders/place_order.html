@@ -160,6 +160,7 @@ function getCookie(name) {
       var csrftoken = getCookie('csrftoken');
       var grand_total= '{{grand_total}}'
       var payment_url="{% url 'order:payments' %}"
+      var order_complete_url="{% url 'order:order_complete' %}"
       var order_number={{order.order_number}}
        // Render the PayPal button into #paypal-button-container
       console.log(payment_url,order_number,csrftoken)
@@ -208,6 +209,7 @@ function getCookie(name) {
         },
         success:function(response){
           console.log(response)
+          window.location.href=order_complete_url+'?order_no='+response.order_number+'&trans_id='+response.transaction_id
         }
       })
   }

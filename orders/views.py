@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from accounts.utils import send_notification
 from marketplace.models import Cart
@@ -126,6 +126,15 @@ def payments(request):
                 send_notification(mail_subject, mail_template, context)
 
         # CLEAR THE CART IF THE PAYMENT IS SUCCESS
-        # cart_items.delete()
+        cart_items.delete()
+        response = {
+            "order_number": order_number,
+            "transaction_id": transaction_id,
+        }
+        return JsonResponse(response)
 
     return HttpResponse("data saved and mail sent")
+
+
+def order_complete(request):
+    return render(request, "orders/order_complete.html")
