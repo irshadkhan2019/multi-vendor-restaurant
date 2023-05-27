@@ -63,8 +63,14 @@ def place_order(request):
             }
             RazorPayOrder = client.order.create(data=DATA)
             print(RazorPayOrder)
-
-            context = {"order": order, "cart_items": cart_items}
+            razorpay_order_id = RazorPayOrder["id"]
+            context = {
+                "order": order,
+                "cart_items": cart_items,
+                "razorpay_order_id": razorpay_order_id,
+                "razorpay_key_id": settings.RAZORPAY_KEY_ID,
+                "razorpay_amount": float(order.total) * 100,
+            }
 
             return render(request, "orders/place_order.html", context)
     return render(request, "orders/place_order.html")

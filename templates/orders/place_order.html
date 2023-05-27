@@ -122,7 +122,10 @@
                                       {% if order.payment_method == 'PayPal' %}
                                         <div id="paypal-button-container"></div>
                                       {% elif order.payment_method == 'RazorPay' %}
-                                        <button class="btn btn-primary w-100 p-2" id="rzp-button1">Pay with RazorPay</button>
+                                        <div id="rzp_payment_button">
+                                          <button class="btn btn-danger w-100 p-2" id="rzp-button1">Pay with RazorPay</button>
+                                          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                                        </div>
                                       {% endif %}
                                   
                                   </ul>
@@ -197,6 +200,48 @@ function getCookie(name) {
       }
 
   }).render('#paypal-button-container');
+
+  //razorpay payment section 
+var options = {
+  "key": "{{razorpay_key_id}}", // Enter the Key ID generated from the Dashboard
+  "amount": "{{razorpay_amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+  "currency": "INR",
+  "name": "foodOnline", //your business name
+  "description": "Complete your payment",
+  "image": "{% static 'logo/foodOnlineLogo.png' %}",
+  "order_id": "{{razorpay_order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+  "handler": function (response){
+      console.log(response)
+      alert(response.razorpay_payment_id);
+      alert(response.razorpay_order_id);
+      alert(response.razorpay_signature)
+  },
+  "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+     "name": "{{order.name}}",//your customer's name
+     "email": "{{order.email}}",
+     "contact": "{{order.phone}}"//Provide the customer's phone number for better conversion rates 
+  },
+  "notes": {
+      "address": "Razorpay Corporate Office"
+  },
+  "theme": {
+      "color": "#3399cc"
+  }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+      alert(response.error.code);
+      alert(response.error.description);
+      alert(response.error.source);
+      alert(response.error.step);
+      alert(response.error.reason);
+      alert(response.error.metadata.order_id);
+      alert(response.error.metadata.payment_id);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+  rzp1.open();
+  e.preventDefault();
+}
 
   //send data to payment view to store in db
   function sendTransaction(transaction_id,status,payment_method){
