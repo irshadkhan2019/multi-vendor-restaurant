@@ -8,6 +8,10 @@ from .models import Order, OrderedFood, Payment
 import simplejson as json
 from .utils import generateOrderNumber
 from django.contrib.auth.decorators import login_required
+from config import settings
+import razorpay
+
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
 
 # Create your views here.
@@ -51,6 +55,15 @@ def place_order(request):
             order.order_number = generateOrderNumber(order.pk)
             order.save()
             # print(order)
+            # Razorpay payments
+            DATA = {
+                "amount": float(order.total) * 100,  # since order is in paise
+                "currency": "INR",
+                "receipt": "receipt" + order.order_number,
+            }
+            RazorPayOrder = client.order.create(data=DATA)
+            print(RazorPayOrder)
+
             context = {"order": order, "cart_items": cart_items}
 
             return render(request, "orders/place_order.html", context)
