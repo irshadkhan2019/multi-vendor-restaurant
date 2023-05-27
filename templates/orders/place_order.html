@@ -119,8 +119,11 @@
                                           </span>
                                       </li>
                                       <!-- Select Payment Method-->
-
-                                      <div id="paypal-button-container"></div>
+                                      {% if order.payment_method == 'PayPal' %}
+                                        <div id="paypal-button-container"></div>
+                                      {% elif order.payment_method == 'RazorPay' %}
+                                        <button class="btn btn-primary w-100 p-2" id="rzp-button1">Pay with RazorPay</button>
+                                      {% endif %}
                                   
                                   </ul>
                            
@@ -163,7 +166,7 @@ function getCookie(name) {
       var order_complete_url="{% url 'order:order_complete' %}"
       var order_number={{order.order_number}}
        // Render the PayPal button into #paypal-button-container
-      console.log(payment_url,order_number,csrftoken)
+      //console.log(payment_url,order_number,csrftoken)
     paypal.Buttons({
 
       // Set up the transaction
